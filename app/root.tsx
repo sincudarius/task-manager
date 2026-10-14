@@ -1,3 +1,4 @@
+import { useEffect, useState } from "react";
 import {
   isRouteErrorResponse,
   Links,
@@ -9,6 +10,42 @@ import {
 
 import type { Route } from "./+types/root";
 import "./app.css";
+
+const THEME_STORAGE_KEY = "tm-theme";
+
+const THEME_INIT_SCRIPT = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');if(t==='dark'||(!t&&window.matchMedia('(prefers-color-scheme: dark)').matches)){document.documentElement.classList.add('dark')}}catch(e){}})();`;
+
+function ThemeToggle() {
+  const [isDark, setIsDark] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setIsDark(document.documentElement.classList.contains("dark"));
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (!mounted) return;
+    document.documentElement.classList.toggle("dark", isDark);
+    try {
+      localStorage.setItem(THEME_STORAGE_KEY, isDark ? "dark" : "light");
+    } catch {
+      // storage unavailable — theme still applies for the session
+    }
+  }, [isDark, mounted]);
+
+  return (
+    <button
+      type="button"
+      onClick={() => setIsDark((v) => !v)}
+      aria-label={isDark ? "Switch to light mode" : "Switch to dark mode"}
+      aria-pressed={isDark}
+      className="rounded-full border border-cream-300 bg-surface px-3 py-1.5 text-sm font-medium text-ink shadow-sm transition-colors hover:bg-raised focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sage-600 dark:border-moss-600 dark:bg-moss-900 dark:text-fog dark:hover:bg-moss-800 dark:focus-visible:outline-sage-400"
+    >
+      {mounted ? (isDark ? "Light mode" : "Dark mode") : "Theme"}
+    </button>
+  );
+}
 
 export const links: Route.LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -31,8 +68,12 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <Meta />
         <Links />
+        <script dangerouslySetInnerHTML={{ __html: THEME_INIT_SCRIPT }} />
       </head>
       <body>
+        <div className="flex justify-end p-4">
+          <ThemeToggle />
+        </div>
         {children}
         <ScrollRestoration />
         <Scripts />
