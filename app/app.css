@@ -1,15 +1,69 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 @theme {
   --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+
+  /* Warm neutrals — light mode paper */
+  --color-paper: #faf9f6;
+  --color-surface: #ffffff;
+  --color-raised: #f1eee8;
+  --color-cream-200: #e7e0d2;
+  --color-cream-300: #d8cfc0;
+  --color-ink: #1c1e1a;
+  --color-fog: #edeee8;
+
+  /* Warm neutrals — dark mode charcoal with green tint */
+  --color-moss-950: #141715;
+  --color-moss-900: #1e231e;
+  --color-moss-800: #262c26;
+  --color-moss-600: #333b33;
+  --color-moss-500: #4b5548;
+
+  /* Sage / olive primary scale */
+  --color-sage-100: #e7ebe0;
+  --color-sage-200: #d3d9c8;
+  --color-sage-300: #b3bea3;
+  --color-sage-400: #a3b18a;
+  --color-sage-500: #8a9b7a;
+  --color-sage-600: #5f6f52;
+  --color-sage-700: #4a5546;
+  --color-sage-800: #35402f;
+  --color-sage-900: #232b20;
+
+  /* Muted terracotta — overdue / high priority */
+  --color-clay-100: #f3e2d6;
+  --color-clay-400: #d08a68;
+  --color-clay-600: #b5603f;
+  --color-clay-700: #8c4a30;
+
+  /* Muted amber — upcoming / medium priority */
+  --color-harvest-100: #f1e8c8;
+  --color-harvest-400: #d4b86a;
+  --color-harvest-600: #8a6d2b;
+  --color-harvest-700: #6b551f;
+}
+
+:root {
+  color-scheme: light;
+}
+
+.dark {
+  color-scheme: dark;
 }
 
 html,
 body {
-  @apply bg-white dark:bg-gray-950;
+  background-color: var(--color-paper);
+  color: var(--color-ink);
+}
 
-  @media (prefers-color-scheme: dark) {
-    color-scheme: dark;
-  }
+.dark html,
+.dark body,
+html.dark,
+html.dark body {
+  background-color: var(--color-moss-950);
+  color: var(--color-fog);
 }
